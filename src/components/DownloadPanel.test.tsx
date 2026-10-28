@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { DownloadPanel } from './DownloadPanel';
@@ -50,7 +49,7 @@ describe('DownloadPanel error handling', () => {
 
     // Assert that the error message is displayed
     await waitFor(() => {
-      expect(screen.getByText('Failed to download PDF. Please try again.')).toBeInTheDocument();
+      expect(screen.getByText('Failed to download PDF. Please try again.')).not.toBeNull();
     });
   });
 });
