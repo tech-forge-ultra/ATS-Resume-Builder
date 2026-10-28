@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ResumeData, ResumeType } from '../types/resume';
 import { CheckCircle2, AlertCircle, XCircle, TrendingUp } from 'lucide-react';
 
@@ -16,7 +16,7 @@ interface ScoreItem {
 }
 
 export const ATSScore: React.FC<Props> = ({ data, resumeType }) => {
-  const calculateScore = (): { total: number; items: ScoreItem[] } => {
+  const { total, items } = useMemo(() => {
     const items: ScoreItem[] = [];
     
     // Contact Info (20 points)
@@ -111,9 +111,8 @@ export const ATSScore: React.FC<Props> = ({ data, resumeType }) => {
     
     const total = items.reduce((sum, item) => sum + item.score, 0);
     return { total, items };
-  };
+  }, [data, resumeType]);
 
-  const { total, items } = calculateScore();
   const percentage = Math.round(total);
 
   const getScoreColor = () => {
