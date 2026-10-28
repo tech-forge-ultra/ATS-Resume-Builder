@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState, useRef, useCallback, useEffect } from 'react'
 import ReactDOM from 'react-dom/client'
 import html2canvas from 'html2canvas'
@@ -92,58 +93,66 @@ function ResumeTemplate({ data, templateId, scale = 1, fontSettings }: { data: R
     data.website || ''
   ].filter(Boolean).join('  |  ')
 
-  const sectionTitle = (title: string, color: string, accent: string) => `
-    <div style="margin-bottom:${S(10)}px">
-      <div style="font-size:${fs.sectionHead}px;font-weight:800;color:${color};letter-spacing:2px;text-transform:uppercase;padding-bottom:${S(6)}px;border-bottom:2.5px solid ${accent};font-family:Arial,sans-serif">${title}</div>
-    </div>`
+  const sectionTitle = (title: string, color: string, accent: string) => (
+    <div style={{ marginBottom: S(10) }}>
+      <div style={{ fontSize: fs.sectionHead, fontWeight: 800, color, letterSpacing: '2px', textTransform: 'uppercase', paddingBottom: S(6), borderBottom: `2.5px solid ${accent}`, fontFamily: 'Arial,sans-serif' }}>{title}</div>
+    </div>
+  )
 
-  const expBlock = (e: Experience) => e.company ? `
-    <div style="margin-bottom:${S(16)}px">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:4px">
+  const expBlock = (e: Experience) => e.company ? (
+    <div style={{ marginBottom: S(16) }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 4 }}>
         <div>
-          <div style="font-size:${fs.jobTitle}px;font-weight:700;color:#111;font-family:Arial,sans-serif">${e.role}</div>
-          <div style="font-size:${fs.company}px;font-weight:600;color:${t.accent};font-family:Arial,sans-serif">${e.company}${e.location ? ' — ' + e.location : ''}</div>
+          <div style={{ fontSize: fs.jobTitle, fontWeight: 700, color: '#111', fontFamily: 'Arial,sans-serif' }}>{e.role}</div>
+          <div style={{ fontSize: fs.company, fontWeight: 600, color: t.accent, fontFamily: 'Arial,sans-serif' }}>{e.company}{e.location ? ' — ' + e.location : ''}</div>
         </div>
-        <div style="font-size:${fs.small}px;color:#64748b;white-space:nowrap;font-family:Arial,sans-serif">${e.duration}</div>
+        <div style={{ fontSize: fs.small, color: '#64748b', whiteSpace: 'nowrap', fontFamily: 'Arial,sans-serif' }}>{e.duration}</div>
       </div>
-      ${e.description ? `<div style="font-size:${fs.body}px;color:#374151;margin-top:${S(6)}px;line-height:1.7;font-family:Arial,sans-serif">${e.description}</div>` : ''}
-    </div>` : ''
+      {e.description ? <div style={{ fontSize: fs.body, color: '#374151', marginTop: S(6), lineHeight: 1.7, fontFamily: 'Arial,sans-serif' }}>{e.description}</div> : null}
+    </div>
+  ) : null
 
-  const eduBlock = (e: Education) => e.school ? `
-    <div style="margin-bottom:${S(16)}px">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:4px">
+  const eduBlock = (e: Education) => e.school ? (
+    <div style={{ marginBottom: S(16) }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 4 }}>
         <div>
-          <div style="font-size:${fs.jobTitle}px;font-weight:700;color:#111;font-family:Arial,sans-serif">${e.degree}</div>
-          <div style="font-size:${fs.company}px;color:${t.accent};font-weight:600;font-family:Arial,sans-serif">${e.school}${e.location ? ' — ' + e.location : ''}</div>
-          ${e.gpa ? `<div style="font-size:${fs.small}px;color:#64748b;font-family:Arial,sans-serif">GPA: ${e.gpa}</div>` : ''}
+          <div style={{ fontSize: fs.jobTitle, fontWeight: 700, color: '#111', fontFamily: 'Arial,sans-serif' }}>{e.degree}</div>
+          <div style={{ fontSize: fs.company, color: t.accent, fontWeight: 600, fontFamily: 'Arial,sans-serif' }}>{e.school}{e.location ? ' — ' + e.location : ''}</div>
+          {e.gpa ? <div style={{ fontSize: fs.small, color: '#64748b', fontFamily: 'Arial,sans-serif' }}>GPA: {e.gpa}</div> : null}
         </div>
-        <div style="font-size:${fs.small}px;color:#64748b;white-space:nowrap;font-family:Arial,sans-serif">${e.year}</div>
+        <div style={{ fontSize: fs.small, color: '#64748b', whiteSpace: 'nowrap', fontFamily: 'Arial,sans-serif' }}>{e.year}</div>
       </div>
-    </div>` : ''
+    </div>
+  ) : null
 
-  const projBlock = (p: Project) => p.name ? `
-    <div style="margin-bottom:${S(16)}px">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:4px">
-        <div style="font-size:${fs.jobTitle}px;font-weight:700;color:#111;font-family:Arial,sans-serif">${p.name}</div>
-        ${p.tech ? `<div style="font-size:${fs.small}px;color:${t.accent};font-style:italic;font-family:Arial,sans-serif">${p.tech}</div>` : ''}
+  const projBlock = (p: Project) => p.name ? (
+    <div style={{ marginBottom: S(16) }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 4 }}>
+        <div style={{ fontSize: fs.jobTitle, fontWeight: 700, color: '#111', fontFamily: 'Arial,sans-serif' }}>{p.name}</div>
+        {p.tech ? <div style={{ fontSize: fs.small, color: t.accent, fontStyle: 'italic', fontFamily: 'Arial,sans-serif' }}>{p.tech}</div> : null}
       </div>
-      ${p.description ? `<div style="font-size:${fs.body}px;color:#374151;margin-top:${S(5)}px;line-height:1.7;font-family:Arial,sans-serif">${p.description}</div>` : ''}
-    </div>` : ''
+      {p.description ? <div style={{ fontSize: fs.body, color: '#374151', marginTop: S(5), lineHeight: 1.7, fontFamily: 'Arial,sans-serif' }}>{p.description}</div> : null}
+    </div>
+  ) : null
 
-  const certBlock = (c: Certificate) => c.name ? `
-    <div style="margin-bottom:${S(12)}px;display:flex;align-items:flex-start;gap:${S(8)}px">
-      <span style="color:${t.accent};font-size:${fs.body}px;margin-top:1px">▸</span>
+  const certBlock = (c: Certificate) => c.name ? (
+    <div style={{ marginBottom: S(12), display: 'flex', alignItems: 'flex-start', gap: S(8) }}>
+      <span style={{ color: t.accent, fontSize: fs.body, marginTop: 1 }}>▸</span>
       <div>
-        <span style="font-size:${fs.body}px;font-weight:700;color:#111;font-family:Arial,sans-serif">${c.name}</span>
-        ${c.issuer ? `<span style="font-size:${fs.small}px;color:${t.accent};font-weight:600;font-family:Arial,sans-serif"> — ${c.issuer}</span>` : ''}
-        ${c.date ? `<span style="font-size:${fs.small}px;color:#64748b;font-family:Arial,sans-serif"> · ${c.date}</span>` : ''}
+        <span style={{ fontSize: fs.body, fontWeight: 700, color: '#111', fontFamily: 'Arial,sans-serif' }}>{c.name}</span>
+        {c.issuer ? <span style={{ fontSize: fs.small, color: t.accent, fontWeight: 600, fontFamily: 'Arial,sans-serif' }}> — {c.issuer}</span> : null}
+        {c.date ? <span style={{ fontSize: fs.small, color: '#64748b', fontFamily: 'Arial,sans-serif' }}> · {c.date}</span> : null}
       </div>
-    </div>` : ''
+    </div>
+  ) : null
 
-  const skillPills = (skills: string[], pillBg: string, pillColor: string) =>
-    `<div style="display:flex;flex-wrap:wrap;gap:${S(8)}px">
-      ${skills.map(sk => `<span style="background:${pillBg};color:${pillColor};padding:${S(5)}px ${S(14)}px;border-radius:100px;font-size:${fs.skill}px;font-weight:600;font-family:Arial,sans-serif">${sk}</span>`).join('')}
-    </div>`
+  const skillPills = (skills: string[], pillBg: string, pillColor: string) => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: S(8) }}>
+      {skills.map((sk, i) => (
+        <span key={i} style={{ background: pillBg, color: pillColor, padding: `${S(5)}px ${S(14)}px`, borderRadius: 100, fontSize: fs.skill, fontWeight: 600, fontFamily: 'Arial,sans-serif' }}>{sk}</span>
+      ))}
+    </div>
+  )
 
   // photo helper kept for future use
   void ((size: number) => data.photo ? `<img src="${data.photo}" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover" />` : '')
@@ -164,33 +173,33 @@ function ResumeTemplate({ data, templateId, scale = 1, fontSettings }: { data: R
         </div>
         {/* Content */}
         {data.summary && <div style={{ marginBottom: fs.spacing }}>
-          <div dangerouslySetInnerHTML={{ __html: sectionTitle('Professional Summary', t.color, t.accent) }} />
+          {sectionTitle('Professional Summary', t.color, t.accent)}
           <div style={{ fontSize: fs.body, color: '#374151', lineHeight: fs.lh, fontFamily: fontStack }}>{data.summary}</div>
         </div>}
 
         {data.experience.some(e => e.company) && <div style={{ marginBottom: fs.spacing }}>
-          <div dangerouslySetInnerHTML={{ __html: sectionTitle('Experience', t.color, t.accent) }} />
-          {data.experience.map((e, i) => <div key={i} dangerouslySetInnerHTML={{ __html: expBlock(e) }} />)}
+          {sectionTitle('Experience', t.color, t.accent)}
+          {data.experience.map((e, i) => <React.Fragment key={i}>{expBlock(e)}</React.Fragment>)}
         </div>}
         {data.education.some(e => e.school) && <div style={{ marginBottom: fs.spacing }}>
-          <div dangerouslySetInnerHTML={{ __html: sectionTitle('Education', t.color, t.accent) }} />
-          {data.education.map((e, i) => <div key={i} dangerouslySetInnerHTML={{ __html: eduBlock(e) }} />)}
+          {sectionTitle('Education', t.color, t.accent)}
+          {data.education.map((e, i) => <React.Fragment key={i}>{eduBlock(e)}</React.Fragment>)}
         </div>}
         {data.skills.length > 0 && <div style={{ marginBottom: fs.spacing }}>
-          <div dangerouslySetInnerHTML={{ __html: sectionTitle('Skills', t.color, t.accent) }} />
-          <div dangerouslySetInnerHTML={{ __html: skillPills(data.skills, `rgba(37,99,235,0.1)`, t.accent) }} />
+          {sectionTitle('Skills', t.color, t.accent)}
+          {skillPills(data.skills, `rgba(37,99,235,0.1)`, t.accent)}
         </div>}
         {data.projects.some(p => p.name) && <div style={{ marginBottom: fs.spacing }}>
-          <div dangerouslySetInnerHTML={{ __html: sectionTitle('Projects', t.color, t.accent) }} />
-          {data.projects.map((p, i) => <div key={i} dangerouslySetInnerHTML={{ __html: projBlock(p) }} />)}
+          {sectionTitle('Projects', t.color, t.accent)}
+          {data.projects.map((p, i) => <React.Fragment key={i}>{projBlock(p)}</React.Fragment>)}
         </div>}
         {data.certificates.some(c => c.name) && <div style={{ marginBottom: fs.spacing }}>
-          <div dangerouslySetInnerHTML={{ __html: sectionTitle('Certifications', t.color, t.accent) }} />
-          {data.certificates.map((c, i) => <div key={i} dangerouslySetInnerHTML={{ __html: certBlock(c) }} />)}
+          {sectionTitle('Certifications', t.color, t.accent)}
+          {data.certificates.map((c, i) => <React.Fragment key={i}>{certBlock(c)}</React.Fragment>)}
         </div>}
         {data.languages.length > 0 && <div>
-          <div dangerouslySetInnerHTML={{ __html: sectionTitle('Languages', t.color, t.accent) }} />
-          <div dangerouslySetInnerHTML={{ __html: skillPills(data.languages, `rgba(100,116,139,0.1)`, '#374151') }} />
+          {sectionTitle('Languages', t.color, t.accent)}
+          {skillPills(data.languages, `rgba(100,116,139,0.1)`, '#374151')}
         </div>}
       </div>
     )
@@ -201,7 +210,9 @@ function ResumeTemplate({ data, templateId, scale = 1, fontSettings }: { data: R
     const sideW = S(260)
     const sideStyle: React.CSSProperties = { width: sideW, minWidth: sideW, background: t.color, padding: `${fs.pad}px ${S(26)}px`, display: 'flex', flexDirection: 'column', gap: fs.spacing }
     const mainStyle: React.CSSProperties = { flex: 1, padding: `${fs.pad}px ${S(30)}px`, background: t.bg, overflowY: 'hidden' }
-    const sideSecTitle = (title: string) => `<div style="font-size:${fs.sectionHead}px;font-weight:800;color:${t.accent};letter-spacing:1.5px;text-transform:uppercase;border-bottom:1.5px solid ${t.accent}55;padding-bottom:${S(6)}px;margin-bottom:${S(12)}px;font-family:Arial,sans-serif">${title}</div>`
+    const sideSecTitle = (title: string) => (
+      <div style={{ fontSize: fs.sectionHead, fontWeight: 800, color: t.accent, letterSpacing: '1.5px', textTransform: 'uppercase', borderBottom: `1.5px solid ${t.accent}55`, paddingBottom: S(6), marginBottom: S(12), fontFamily: 'Arial,sans-serif' }}>{title}</div>
+    )
     const textW = 'rgba(255,255,255,0.9)'
     const textWMuted = 'rgba(255,255,255,0.6)'
     return (
@@ -214,7 +225,7 @@ function ResumeTemplate({ data, templateId, scale = 1, fontSettings }: { data: R
             {data.title && <div style={{ fontSize: fs.title, color: t.accent, fontWeight: 600, marginTop: S(6) }}>{data.title}</div>}
           </div>
           <div>
-            <div dangerouslySetInnerHTML={{ __html: sideSecTitle('Contact') }} />
+            {sideSecTitle('Contact')}
             {data.email && <div style={{ fontSize: fs.contact, color: textW, marginBottom: S(7) }}>📧 {data.email}</div>}
             {data.phone && <div style={{ fontSize: fs.contact, color: textW, marginBottom: S(7) }}>📱 {data.phone}</div>}
             {data.location && <div style={{ fontSize: fs.contact, color: textW, marginBottom: S(7) }}>📍 {data.location}</div>}
@@ -222,15 +233,15 @@ function ResumeTemplate({ data, templateId, scale = 1, fontSettings }: { data: R
             {data.github && <div style={{ fontSize: fs.contact, color: t.accent, marginBottom: S(7) }}>💻 {data.github}</div>}
           </div>
           {data.skills.length > 0 && <div>
-            <div dangerouslySetInnerHTML={{ __html: sideSecTitle('Skills') }} />
+            {sideSecTitle('Skills')}
             {data.skills.map((sk, i) => <div key={i} style={{ fontSize: fs.body, color: textW, marginBottom: S(7), display: 'flex', alignItems: 'center', gap: S(8) }}><span style={{ color: t.accent }}>▸</span>{sk}</div>)}
           </div>}
           {data.languages.length > 0 && <div>
-            <div dangerouslySetInnerHTML={{ __html: sideSecTitle('Languages') }} />
+            {sideSecTitle('Languages')}
             {data.languages.map((l, i) => <div key={i} style={{ fontSize: fs.body, color: textW, marginBottom: S(6) }}>{l}</div>)}
           </div>}
           {data.certificates.some(c => c.name) && <div>
-            <div dangerouslySetInnerHTML={{ __html: sideSecTitle('Certifications') }} />
+            {sideSecTitle('Certifications')}
             {data.certificates.filter(c => c.name).map((c, i) => <div key={i} style={{ marginBottom: S(12) }}>
               <div style={{ fontSize: fs.body, fontWeight: 700, color: textW }}>{c.name}</div>
               {c.issuer && <div style={{ fontSize: fs.small, color: textWMuted }}>{c.issuer}</div>}
@@ -240,20 +251,20 @@ function ResumeTemplate({ data, templateId, scale = 1, fontSettings }: { data: R
         {/* Main */}
         <div style={mainStyle}>
           {data.summary && <div style={{ marginBottom: fs.spacing }}>
-            <div dangerouslySetInnerHTML={{ __html: sectionTitle('Summary', t.color, t.accent) }} />
+            {sectionTitle('Summary', t.color, t.accent)}
             <div style={{ fontSize: fs.body, color: '#374151', lineHeight: fs.lh }}>{data.summary}</div>
           </div>}
           {data.experience.some(e => e.company) && <div style={{ marginBottom: fs.spacing }}>
-            <div dangerouslySetInnerHTML={{ __html: sectionTitle('Experience', t.color, t.accent) }} />
-            {data.experience.map((e, i) => <div key={i} dangerouslySetInnerHTML={{ __html: expBlock(e) }} />)}
+            {sectionTitle('Experience', t.color, t.accent)}
+            {data.experience.map((e, i) => <React.Fragment key={i}>{expBlock(e)}</React.Fragment>)}
           </div>}
           {data.education.some(e => e.school) && <div style={{ marginBottom: fs.spacing }}>
-            <div dangerouslySetInnerHTML={{ __html: sectionTitle('Education', t.color, t.accent) }} />
-            {data.education.map((e, i) => <div key={i} dangerouslySetInnerHTML={{ __html: eduBlock(e) }} />)}
+            {sectionTitle('Education', t.color, t.accent)}
+            {data.education.map((e, i) => <React.Fragment key={i}>{eduBlock(e)}</React.Fragment>)}
           </div>}
           {data.projects.some(p => p.name) && <div>
-            <div dangerouslySetInnerHTML={{ __html: sectionTitle('Projects', t.color, t.accent) }} />
-            {data.projects.map((p, i) => <div key={i} dangerouslySetInnerHTML={{ __html: projBlock(p) }} />)}
+            {sectionTitle('Projects', t.color, t.accent)}
+            {data.projects.map((p, i) => <React.Fragment key={i}>{projBlock(p)}</React.Fragment>)}
           </div>}
         </div>
       </div>
@@ -263,7 +274,9 @@ function ResumeTemplate({ data, templateId, scale = 1, fontSettings }: { data: R
   // ─── Sidebar Right Layout ─────────────────────────────────────
   if (t.layout === 'sidebar-right') {
     const sideW = S(250)
-    const sideSecTitle = (title: string) => `<div style="font-size:${fs.sectionHead}px;font-weight:800;color:${t.accent};letter-spacing:1.5px;text-transform:uppercase;border-bottom:1.5px solid ${t.accent}55;padding-bottom:${S(6)}px;margin-bottom:${S(12)}px;font-family:Arial,sans-serif">${title}</div>`
+    const sideSecTitle = (title: string) => (
+      <div style={{ fontSize: fs.sectionHead, fontWeight: 800, color: t.accent, letterSpacing: '1.5px', textTransform: 'uppercase', borderBottom: `1.5px solid ${t.accent}55`, paddingBottom: S(6), marginBottom: S(12), fontFamily: 'Arial,sans-serif' }}>{title}</div>
+    )
     return (
       <div style={{ width: '100%', minHeight: '100%', display: 'flex', fontFamily: 'Arial,sans-serif', background: t.bg }}>
         {/* Main */}
@@ -274,26 +287,26 @@ function ResumeTemplate({ data, templateId, scale = 1, fontSettings }: { data: R
             {data.title && <div style={{ fontSize: fs.title, color: t.accent, fontWeight: 600, marginTop: S(6) }}>{data.title}</div>}
           </div>
           {data.summary && <div style={{ marginBottom: fs.spacing }}>
-            <div dangerouslySetInnerHTML={{ __html: sectionTitle('Summary', t.color, t.accent) }} />
+            {sectionTitle('Summary', t.color, t.accent)}
             <div style={{ fontSize: fs.body, color: '#374151', lineHeight: fs.lh }}>{data.summary}</div>
           </div>}
           {data.experience.some(e => e.company) && <div style={{ marginBottom: fs.spacing }}>
-            <div dangerouslySetInnerHTML={{ __html: sectionTitle('Experience', t.color, t.accent) }} />
-            {data.experience.map((e, i) => <div key={i} dangerouslySetInnerHTML={{ __html: expBlock(e) }} />)}
+            {sectionTitle('Experience', t.color, t.accent)}
+            {data.experience.map((e, i) => <React.Fragment key={i}>{expBlock(e)}</React.Fragment>)}
           </div>}
           {data.education.some(e => e.school) && <div style={{ marginBottom: fs.spacing }}>
-            <div dangerouslySetInnerHTML={{ __html: sectionTitle('Education', t.color, t.accent) }} />
-            {data.education.map((e, i) => <div key={i} dangerouslySetInnerHTML={{ __html: eduBlock(e) }} />)}
+            {sectionTitle('Education', t.color, t.accent)}
+            {data.education.map((e, i) => <React.Fragment key={i}>{eduBlock(e)}</React.Fragment>)}
           </div>}
           {data.projects.some(p => p.name) && <div>
-            <div dangerouslySetInnerHTML={{ __html: sectionTitle('Projects', t.color, t.accent) }} />
-            {data.projects.map((p, i) => <div key={i} dangerouslySetInnerHTML={{ __html: projBlock(p) }} />)}
+            {sectionTitle('Projects', t.color, t.accent)}
+            {data.projects.map((p, i) => <React.Fragment key={i}>{projBlock(p)}</React.Fragment>)}
           </div>}
         </div>
         {/* Right Sidebar */}
         <div style={{ width: sideW, minWidth: sideW, background: t.color, padding: `${fs.pad}px ${S(24)}px` }}>
           {data.email && <div style={{ marginBottom: fs.spacing }}>
-            <div dangerouslySetInnerHTML={{ __html: sideSecTitle('Contact') }} />
+            {sideSecTitle('Contact')}
             <div style={{ fontSize: fs.contact, color: 'rgba(255,255,255,0.9)', marginBottom: S(7) }}>{data.email}</div>
             {data.phone && <div style={{ fontSize: fs.contact, color: 'rgba(255,255,255,0.9)', marginBottom: S(7) }}>{data.phone}</div>}
             {data.location && <div style={{ fontSize: fs.contact, color: 'rgba(255,255,255,0.9)', marginBottom: S(7) }}>{data.location}</div>}
@@ -301,13 +314,13 @@ function ResumeTemplate({ data, templateId, scale = 1, fontSettings }: { data: R
             {data.github && <div style={{ fontSize: fs.contact, color: t.accent }}>{data.github}</div>}
           </div>}
           {data.skills.length > 0 && <div style={{ marginBottom: fs.spacing }}>
-            <div dangerouslySetInnerHTML={{ __html: sideSecTitle('Skills') }} />
+            {sideSecTitle('Skills')}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: S(6) }}>
               {data.skills.map((sk, i) => <span key={i} style={{ background: `${t.accent}44`, color: '#fff', padding: `${S(4)}px ${S(10)}px`, borderRadius: '100px', fontSize: fs.skill, fontWeight: 600 }}>{sk}</span>)}
             </div>
           </div>}
           {data.certificates.some(c => c.name) && <div style={{ marginBottom: fs.spacing }}>
-            <div dangerouslySetInnerHTML={{ __html: sideSecTitle('Certifications') }} />
+            {sideSecTitle('Certifications')}
             {data.certificates.filter(c => c.name).map((c, i) => <div key={i} style={{ marginBottom: S(12) }}>
               <div style={{ fontSize: fs.body, fontWeight: 700, color: '#fff' }}>{c.name}</div>
               {c.issuer && <div style={{ fontSize: fs.small, color: t.accent }}>{c.issuer}</div>}
@@ -315,7 +328,7 @@ function ResumeTemplate({ data, templateId, scale = 1, fontSettings }: { data: R
             </div>)}
           </div>}
           {data.languages.length > 0 && <div>
-            <div dangerouslySetInnerHTML={{ __html: sideSecTitle('Languages') }} />
+            {sideSecTitle('Languages')}
             {data.languages.map((l, i) => <div key={i} style={{ fontSize: fs.body, color: 'rgba(255,255,255,0.9)', marginBottom: S(7) }}>{l}</div>)}
           </div>}
         </div>
@@ -347,35 +360,35 @@ function ResumeTemplate({ data, templateId, scale = 1, fontSettings }: { data: R
           {/* Left col */}
           <div style={{ flex: 1 }}>
             {data.summary && <div style={{ marginBottom: fs.spacing }}>
-              <div dangerouslySetInnerHTML={{ __html: sectionTitle('Summary', t.color, t.accent) }} />
+              {sectionTitle('Summary', t.color, t.accent)}
               <div style={{ fontSize: fs.body, color: '#374151', lineHeight: fs.lh }}>{data.summary}</div>
             </div>}
             {data.experience.some(e => e.company) && <div style={{ marginBottom: fs.spacing }}>
-              <div dangerouslySetInnerHTML={{ __html: sectionTitle('Experience', t.color, t.accent) }} />
-              {data.experience.map((e, i) => <div key={i} dangerouslySetInnerHTML={{ __html: expBlock(e) }} />)}
+              {sectionTitle('Experience', t.color, t.accent)}
+              {data.experience.map((e, i) => <React.Fragment key={i}>{expBlock(e)}</React.Fragment>)}
             </div>}
             {data.projects.some(p => p.name) && <div>
-              <div dangerouslySetInnerHTML={{ __html: sectionTitle('Projects', t.color, t.accent) }} />
-              {data.projects.map((p, i) => <div key={i} dangerouslySetInnerHTML={{ __html: projBlock(p) }} />)}
+              {sectionTitle('Projects', t.color, t.accent)}
+              {data.projects.map((p, i) => <React.Fragment key={i}>{projBlock(p)}</React.Fragment>)}
             </div>}
           </div>
           {/* Right col */}
           <div style={{ width: S(240), flexShrink: 0 }}>
             {data.education.some(e => e.school) && <div style={{ marginBottom: fs.spacing }}>
-              <div dangerouslySetInnerHTML={{ __html: sectionTitle('Education', t.color, t.accent) }} />
-              {data.education.map((e, i) => <div key={i} dangerouslySetInnerHTML={{ __html: eduBlock(e) }} />)}
+              {sectionTitle('Education', t.color, t.accent)}
+              {data.education.map((e, i) => <React.Fragment key={i}>{eduBlock(e)}</React.Fragment>)}
             </div>}
             {data.skills.length > 0 && <div style={{ marginBottom: fs.spacing }}>
-              <div dangerouslySetInnerHTML={{ __html: sectionTitle('Skills', t.color, t.accent) }} />
-              <div dangerouslySetInnerHTML={{ __html: skillPills(data.skills, `${t.accent}22`, t.accent) }} />
+              {sectionTitle('Skills', t.color, t.accent)}
+              {skillPills(data.skills, `${t.accent}22`, t.accent)}
             </div>}
             {data.certificates.some(c => c.name) && <div style={{ marginBottom: fs.spacing }}>
-              <div dangerouslySetInnerHTML={{ __html: sectionTitle('Certifications', t.color, t.accent) }} />
-              {data.certificates.map((c, i) => <div key={i} dangerouslySetInnerHTML={{ __html: certBlock(c) }} />)}
+              {sectionTitle('Certifications', t.color, t.accent)}
+              {data.certificates.map((c, i) => <React.Fragment key={i}>{certBlock(c)}</React.Fragment>)}
             </div>}
             {data.languages.length > 0 && <div>
-              <div dangerouslySetInnerHTML={{ __html: sectionTitle('Languages', t.color, t.accent) }} />
-              <div dangerouslySetInnerHTML={{ __html: skillPills(data.languages, '#f1f5f9', '#374151') }} />
+              {sectionTitle('Languages', t.color, t.accent)}
+              {skillPills(data.languages, '#f1f5f9', '#374151')}
             </div>}
           </div>
         </div>
@@ -406,34 +419,34 @@ function ResumeTemplate({ data, templateId, scale = 1, fontSettings }: { data: R
         <div style={{ display: 'flex', padding: `${fs.spacing}px ${S(36)}px`, gap: S(30) }}>
           <div style={{ flex: 1 }}>
             {data.summary && <div style={{ marginBottom: fs.spacing }}>
-              <div dangerouslySetInnerHTML={{ __html: sectionTitle('Summary', t.color, t.accent) }} />
+              {sectionTitle('Summary', t.color, t.accent)}
               <div style={{ fontSize: fs.body, color: '#374151', lineHeight: fs.lh }}>{data.summary}</div>
             </div>}
             {data.experience.some(e => e.company) && <div style={{ marginBottom: fs.spacing }}>
-              <div dangerouslySetInnerHTML={{ __html: sectionTitle('Experience', t.color, t.accent) }} />
-              {data.experience.map((e, i) => <div key={i} dangerouslySetInnerHTML={{ __html: expBlock(e) }} />)}
+              {sectionTitle('Experience', t.color, t.accent)}
+              {data.experience.map((e, i) => <React.Fragment key={i}>{expBlock(e)}</React.Fragment>)}
             </div>}
             {data.projects.some(p => p.name) && <div>
-              <div dangerouslySetInnerHTML={{ __html: sectionTitle('Projects', t.color, t.accent) }} />
-              {data.projects.map((p, i) => <div key={i} dangerouslySetInnerHTML={{ __html: projBlock(p) }} />)}
+              {sectionTitle('Projects', t.color, t.accent)}
+              {data.projects.map((p, i) => <React.Fragment key={i}>{projBlock(p)}</React.Fragment>)}
             </div>}
           </div>
           <div style={{ width: S(240), flexShrink: 0 }}>
             {data.education.some(e => e.school) && <div style={{ marginBottom: fs.spacing }}>
-              <div dangerouslySetInnerHTML={{ __html: sectionTitle('Education', t.color, t.accent) }} />
-              {data.education.map((e, i) => <div key={i} dangerouslySetInnerHTML={{ __html: eduBlock(e) }} />)}
+              {sectionTitle('Education', t.color, t.accent)}
+              {data.education.map((e, i) => <React.Fragment key={i}>{eduBlock(e)}</React.Fragment>)}
             </div>}
             {data.skills.length > 0 && <div style={{ marginBottom: fs.spacing }}>
-              <div dangerouslySetInnerHTML={{ __html: sectionTitle('Skills', t.color, t.accent) }} />
-              <div dangerouslySetInnerHTML={{ __html: skillPills(data.skills, `${t.accent}22`, t.accent) }} />
+              {sectionTitle('Skills', t.color, t.accent)}
+              {skillPills(data.skills, `${t.accent}22`, t.accent)}
             </div>}
             {data.certificates.some(c => c.name) && <div style={{ marginBottom: fs.spacing }}>
-              <div dangerouslySetInnerHTML={{ __html: sectionTitle('Certifications', t.color, t.accent) }} />
-              {data.certificates.map((c, i) => <div key={i} dangerouslySetInnerHTML={{ __html: certBlock(c) }} />)}
+              {sectionTitle('Certifications', t.color, t.accent)}
+              {data.certificates.map((c, i) => <React.Fragment key={i}>{certBlock(c)}</React.Fragment>)}
             </div>}
             {data.languages.length > 0 && <div>
-              <div dangerouslySetInnerHTML={{ __html: sectionTitle('Languages', t.color, t.accent) }} />
-              <div dangerouslySetInnerHTML={{ __html: skillPills(data.languages, '#f1f5f9', '#374151') }} />
+              {sectionTitle('Languages', t.color, t.accent)}
+              {skillPills(data.languages, '#f1f5f9', '#374151')}
             </div>}
           </div>
         </div>
