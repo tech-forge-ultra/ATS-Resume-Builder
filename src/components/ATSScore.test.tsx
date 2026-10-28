@@ -1,8 +1,8 @@
 import { test, expect } from 'vitest';
-import React, { useState, useEffect } from 'react';
+
 import { render } from '@testing-library/react';
 import { ATSScore } from './ATSScore';
-import { ResumeData, ResumeType } from '../types/resume';
+import { ResumeData } from '../types/resume';
 
 const mockData: ResumeData = {
   personalInfo: {
@@ -12,13 +12,12 @@ const mockData: ResumeData = {
     location: 'New York, NY',
     linkedIn: 'linkedin.com/in/johndoe',
     summary: 'A highly motivated software engineer with 5 years of experience in building scalable web applications. Proficient in JavaScript, React, and Node.js. Strong problem-solving skills and a passion for learning new technologies.',
-    github: '',
-    portfolio: ''
+    website: ''
   },
   experience: [
     {
       id: '1',
-      title: 'Senior Software Engineer',
+      position: 'Senior Software Engineer',
       company: 'Tech Corp',
       location: 'New York, NY',
       startDate: '2020-01-01',
@@ -29,7 +28,7 @@ const mockData: ResumeData = {
     },
     {
       id: '2',
-      title: 'Software Engineer',
+      position: 'Software Engineer',
       company: 'Web Solutions',
       location: 'San Francisco, CA',
       startDate: '2018-01-01',
@@ -43,32 +42,36 @@ const mockData: ResumeData = {
     {
       id: '1',
       degree: 'Bachelor of Science in Computer Science',
-      school: 'University of Technology',
-      location: 'Boston, MA',
+      institution: 'University of Technology',
+      field: 'Computer Science',
       startDate: '2014-09-01',
       endDate: '2018-05-01',
       gpa: '3.8',
-      achievements: ['Dean\'s List', 'Hackathon Winner']
+      achievements: 'Dean\'s List, Hackathon Winner'
     }
   ],
   skills: ['JavaScript', 'TypeScript', 'React', 'Node.js', 'Python', 'SQL', 'Git', 'Docker', 'AWS', 'GraphQL'],
   projects: [
     {
       id: '1',
-      title: 'E-commerce Platform',
+      name: 'E-commerce Platform',
       description: 'Built a full-stack e-commerce platform using MERN stack.',
       link: 'github.com/johndoe/ecommerce',
-      technologies: ['MongoDB', 'Express', 'React', 'Node.js']
+      technologies: 'MongoDB, Express, React, Node.js',
+      highlights: []
     },
     {
       id: '2',
-      title: 'Task Management App',
+      name: 'Task Management App',
       description: 'Developed a task management application with real-time updates.',
       link: 'github.com/johndoe/taskapp',
-      technologies: ['React', 'Firebase', 'Tailwind CSS']
+      technologies: 'React, Firebase, Tailwind CSS',
+      highlights: []
     }
   ],
-  certifications: []
+  certifications: [],
+  languages: [],
+  hobbies: []
 };
 
 test('render ATSScore component benchmark', { timeout: 60000 }, () => {
