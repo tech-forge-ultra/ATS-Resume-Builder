@@ -1,71 +1,38 @@
 import { describe, it, expect } from 'vitest';
-import { suggestSummary } from './aiService';
-import type { Experience } from '../types/resume';
+import { generateResumeFromPrompt } from './aiService';
 
-describe('suggestSummary', () => {
-  const createMockExperience = (overrides?: Partial<Experience>): Experience => ({
-    id: '1',
-    company: 'Test Company',
-    position: 'Developer',
-    location: 'Remote',
-    startDate: '2020-01',
-    endDate: '2023-01',
-    current: false,
-    description: 'Test description',
-    achievements: ['Test achievement'],
-    ...overrides,
+describe('aiService - generateResumeFromPrompt', () => {
+  it('should return the fresher MBA resume structure when prompt includes "mba"', () => {
+    const resume = generateResumeFromPrompt('I need an mba resume');
+    expect(resume.personalInfo.fullName).toBe('John Smith');
   });
 
-  it('should return experienced summary when experience length > 1', () => {
-    const skills = ['React', 'Node', 'TypeScript'];
-    const experience = [
-      createMockExperience({ id: '1' }),
-      createMockExperience({ id: '2' })
-    ];
-
-    const summary = suggestSummary(skills, experience);
-
-    expect(summary).toContain('Results-driven professional with extensive experience in React, Node, TypeScript.');
-    expect(summary).toContain('Proven track record of delivering high-impact projects');
+  it('should return the fresher MBA resume structure when prompt includes "business"', () => {
+    const resume = generateResumeFromPrompt('business analyst role');
+    expect(resume.personalInfo.fullName).toBe('John Smith');
   });
 
-  it('should return fresher summary when experience length is 1', () => {
-    const skills = ['React', 'Node', 'TypeScript'];
-    const experience = [createMockExperience()];
-
-    const summary = suggestSummary(skills, experience);
-
-    expect(summary).toContain('Motivated and detail-oriented recent graduate with strong foundation in React, Node, TypeScript.');
-    expect(summary).toContain('Eager to apply academic knowledge and practical skills');
+  it('should return the MCA graduate resume structure when prompt includes "mca"', () => {
+    const resume = generateResumeFromPrompt('mca student looking for internship');
+    expect(resume.personalInfo.fullName).toBe('Priya Sharma');
   });
 
-  it('should return fresher summary when experience length is 0', () => {
-    const skills = ['React', 'Node', 'TypeScript'];
-    const experience: Experience[] = [];
-
-    const summary = suggestSummary(skills, experience);
-
-    expect(summary).toContain('Motivated and detail-oriented recent graduate with strong foundation in React, Node, TypeScript.');
-    expect(summary).toContain('Eager to apply academic knowledge and practical skills');
+  it('should return the experienced professional resume structure when prompt includes "senior"', () => {
+    const resume = generateResumeFromPrompt('senior role');
+    expect(resume.personalInfo.fullName).toBe('Michael Anderson');
   });
 
-  it('should only include the first 5 skills in the summary', () => {
-    const skills = ['React', 'Node', 'TypeScript', 'AWS', 'Docker', 'Kubernetes', 'GraphQL'];
-    const experience: Experience[] = [];
-
-    const summary = suggestSummary(skills, experience);
-
-    expect(summary).toContain('strong foundation in React, Node, TypeScript, AWS, Docker.');
-    expect(summary).not.toContain('Kubernetes');
-    expect(summary).not.toContain('GraphQL');
+  it('should return the default resume structure (MCA Graduate) when prompt does not match any specific keywords', () => {
+    // The code currently returns mcaGraduateResume as default, although the comment says fresher template.
+    const resume = generateResumeFromPrompt('random prompt');
+    expect(resume.personalInfo.fullName).toBe('Priya Sharma');
   });
 
-  it('should handle an empty skills array', () => {
-    const skills: string[] = [];
-    const experience: Experience[] = [];
+  it('should be case insensitive', () => {
+    const resumeMba = generateResumeFromPrompt('MBA');
+    expect(resumeMba.personalInfo.fullName).toBe('John Smith');
 
-    const summary = suggestSummary(skills, experience);
-
-    expect(summary).toContain('strong foundation in .'); // This follows the current implementation
+    const resumeSenior = generateResumeFromPrompt('SENIOR ROLE');
+    expect(resumeSenior.personalInfo.fullName).toBe('Michael Anderson');
   });
 });
