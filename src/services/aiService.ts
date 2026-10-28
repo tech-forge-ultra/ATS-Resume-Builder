@@ -312,7 +312,7 @@ export const suggestSummary = (skills: string[], experience: Experience[]): stri
 export const suggestSkills = (field: string): string[] => {
   const fieldLower = field.toLowerCase();
   
-  if (fieldLower.includes('computer') || fieldLower.includes('software') || fieldLower.includes('it')) {
+  if (fieldLower.includes('computer') || fieldLower.includes('software') || /\bit\b/.test(fieldLower)) {
     return ['JavaScript', 'Python', 'React', 'Node.js', 'SQL', 'Git', 'AWS', 'Docker', 'Agile', 'Problem Solving'];
   }
   
